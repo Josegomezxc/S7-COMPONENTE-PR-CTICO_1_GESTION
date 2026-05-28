@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Nuevo{% endif %} usuario{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'users:empleado_list' %}">Usuarios</a></li>
+<li class="breadcrumb-item active">{% if object %}Editar{% else %}Nuevo{% endif %}</li>
+{% endblock %}
+
+{% block content %}
+<section class="page-hero" aria-label="Cabecera del formulario">
+    <h1>
+        <i class="fas fa-user{% if object %}-edit{% else %}-plus{% endif %}"></i>
+        {% if object %}Editar usuario{% else %}Nuevo usuario{% endif %}
+    </h1>
+    <p class="lead">{% if object %}Modificá el rol o estado del usuario.{% else %}Ingresá usuario, contraseña y rol.{% endif %}</p>
+</section>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card modern-card mb-4">
+            <div class="card-header">
+                <h2 class="h6 m-0">
+                    <i class="fas fa-id-card text-primary"></i>
+                    Datos del usuario
+                </h2>
+            </div>
+            <form method="post" novalidate autocomplete="off">
+                {% csrf_token %}
+                <div class="card-body">
+                    {% for field in form %}
+                    <div class="form-group">
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="form-check">
+                                {{ field }}
+                                <label class="form-check-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                </label>
+                            </div>
+                        {% else %}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% if field.errors %}
+                            <small class="text-danger d-block">{{ field.errors|join:", " }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-between">
+                    <a href="{% url 'users:empleado_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-action-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

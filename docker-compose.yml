@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: donasara_db_container
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=donasara_prod
+      - POSTGRES_USER=sara_admin
+      - POSTGRES_PASSWORD=sara_secure_pass123
+    ports:
+      - "5432:5432"
+
+  # Servicio 2: Aplicación Django (Doña Sara POS)
+  web:
+    build: .
+    container_name: donasara_web_container
+    restart: always
+    # Ejecuta migraciones, recopila archivos estáticos y levanta el servidor
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-fohrtxpop*pc4oj&jm97#t)z19p(gb3@6ojy2-f)_s)i2k4p_i
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - USE_POSTGRES=True
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=donasara_prod
+      - DB_USER=sara_admin
+      - DB_PASSWORD=sara_secure_pass123
+      - DB_HOST=db
+      - DB_PORT=5432
+      - NEGOCIO_NOMBRE=Doña Sara - Papas y Hamburguesas (Docker Local)
+    depends_on:
+      - db
+
+volumes:
+  postgres_data: # Persistencia física para que los productos y órdenes no se borren
