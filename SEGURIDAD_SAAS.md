@@ -48,6 +48,8 @@ python manage.py cambiar_password_superowner
 
 ## Checklist de seguridad antes de vender
 
+- [ ] Revisar configuración de seguridad
+
 ### Variables de entorno (`.env`)
 ```env
 SECRET_KEY=genera-una-clave-larga-y-aleatoria-aqui
