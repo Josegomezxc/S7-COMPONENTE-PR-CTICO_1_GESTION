@@ -1,5 +1,5 @@
 # 1. Imagen base oficial estable
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # 2. Evitar que Python escriba archivos .pyc y forzar salida de logs directa
 ENV PYTHONDONTWRITEBYTECODE=1
